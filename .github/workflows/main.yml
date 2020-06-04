@@ -26,4 +26,4 @@ jobs:
         cd awesomium
         ls -la
         git init
-        docker build -t test-image .
+        docker build -t awesomium .
