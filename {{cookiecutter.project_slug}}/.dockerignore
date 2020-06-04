@@ -5,6 +5,7 @@
 
 .env
 
+.cache
 .coverage
 coverage.svg
 report.html

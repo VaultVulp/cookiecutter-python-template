@@ -7,6 +7,6 @@
     "upload_badge_to_minio_host": "n",
     "minio_host": "some.host.domain",
     "enable_auto_deploy": "n",
-    "coverage_fail_under": "50",
+    "coverage_fail_under": "30",
     "python_version": "3.8"
 }
