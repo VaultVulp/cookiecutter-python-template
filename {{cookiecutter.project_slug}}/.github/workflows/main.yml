@@ -58,7 +58,7 @@ jobs:
       run: pipenv run check-flake8
 
     - name: Run tests
-      run: pipenv run test
+      run: pipenv run test --html=report.html --self-contained-html
 
     - if: always()
       name: Upload pytest report

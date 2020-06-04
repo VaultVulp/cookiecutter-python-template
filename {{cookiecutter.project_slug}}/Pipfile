@@ -28,7 +28,7 @@ loguru = "*"
 python_version = "{{cookiecutter.python_version}}"
 
 [scripts]
-test = "py.test --cov {{cookiecutter.project_slug }} --html=report.html --self-contained-html"
+test = "py.test --cov {{cookiecutter.project_slug }}"
 check-fixtures = "py.test {{cookiecutter.project_slug }} --dead-fixtures --dup-fixtures"
 check-yapf = "yapf -d -r -p {{cookiecutter.project_slug }}"
 fix-yapf = "yapf -i -r -p {{cookiecutter.project_slug }}"
