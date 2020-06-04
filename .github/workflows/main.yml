@@ -25,3 +25,4 @@ jobs:
         cookiecutter --no-input ./cookiecutter-python-template
         cd awesomium
         ls -la
+        docker build -t test-image .
