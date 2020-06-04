@@ -1,0 +1,15 @@
+.DS_Store
+
+.idea/
+.code/
+
+.env
+
+.coverage
+coverage.svg
+log/
+
+.venv/
+__pycache__/
+
+Dockerfile

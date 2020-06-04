@@ -1,0 +1,38 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+coverage-badge = "*"
+flake8 = "*"
+isort = "*"
+pbr = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-env = "*"
+pytest-deadfixtures = "*"
+pytest-html = "*"
+pytest-mock = "*"
+pytest-randomly = "*"
+pytest-sugar = "*"
+s3cmd = "*"
+yapf = "*"
+
+[packages]
+click = "*"
+dynaconf = "*"
+loguru = "*"
+
+[requires]
+python_version = "{{cookiecutter.python_version}}"
+
+[scripts]
+test = "py.test --cov {{cookiecutter.project_slug }} --html=report.html --self-contained-html"
+check-fixtures = "py.test {{cookiecutter.project_slug }} --dead-fixtures --dup-fixtures"
+check-yapf = "yapf -d -r -p {{cookiecutter.project_slug }}"
+fix-yapf = "yapf -i -r -p {{cookiecutter.project_slug }}"
+check-isort = "isort -rc -c {{cookiecutter.project_slug }}"
+fix-isort = "isort -rc {{cookiecutter.project_slug }}"
+check-flake8 = "flake8 {{cookiecutter.project_slug }}"
+make-badge = "coverage-badge -o ./coverage.svg"

@@ -1,0 +1,202 @@
+{% raw -%}
+name: Main
+
+on: [push]
+
+jobs:
+  check-and-test:
+    runs-on: ubuntu-latest
+
+    env:
+      PIPENV_VENV_IN_PROJECT: 1
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+{%- endraw %}
+        python-version: {{cookiecutter.python_version}}
+{%- raw %}
+
+    - name: Get pip cache
+      uses: actions/cache@v1
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/Pipfile.lock') }}
+
+    - name: Get pipenv cache
+      uses: actions/cache@v1
+      with:
+        path: ~/.cache/pipenv
+        key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+
+    - name: Get venv cache
+      uses: actions/cache@v1
+      id: cache
+      with:
+        path: ./.venv
+        key: ${{ runner.os }}-venv-${{ hashFiles('**/Pipfile.lock') }}
+
+    - name: Set up environment
+      run: |
+        git status
+        python -m pip install --upgrade pip
+        pip install -U pipenv
+
+    - name: Install dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: pipenv install --dev --deploy
+
+    - name: Reformat files
+      run: |
+        pipenv run fix-isort
+        pipenv run fix-yapf
+
+    - name: Check code style
+      run: pipenv run check-flake8
+
+    - name: Run tests
+      run: pipenv run test
+
+    - if: always()
+      name: Upload pytest report
+      uses: actions/upload-artifact@v1
+      with:
+        name: pytest report
+        path: report.html
+
+    - name: Check fixtures
+      run: pipenv run check-fixtures
+
+    - name: Config git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
+    - name: Commit and push changes
+      if: startsWith(github.ref, 'refs/tags/') == false
+      run: |
+        git commit -a -m "Reformat files" || true
+        git push
+{%- endraw %}
+{%- if cookiecutter.upload_badge_to_minio_host == 'y' %}
+{%- raw %}
+
+    - name: Upload badge
+      if: github.ref == 'refs/heads/develop'
+      run: |
+        pipenv run make-badge
+        pipenv run s3cmd -P -s --mime-type=image/svg+xml --host=$MINIO_HOST --host-bucket=$MINIO_HOST --access_key=$MINIO_KEY --secret_key=$MINIO_SECRET --signature-v2 --no-check-certificate --check-hostname put ./coverage.svg s3://coverage/${GITHUB_REPOSITORY}/coverage.svg
+      env:
+        MINIO_HOST: ${{ secrets.MINIO_HOST }}
+        MINIO_KEY: ${{ secrets.MINIO_KEY }}
+        MINIO_SECRET: ${{ secrets.MINIO_SECRET }}
+{%- endraw %}
+{%- endif %}
+{%- raw %}
+
+  build-and-publish-head:
+    runs-on: ubuntu-latest
+    needs: check-and-test
+    if: github.ref == 'refs/heads/develop'
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build and Publish head Docker image
+      uses: VaultVulp/gp-docker-action@1.1.1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+{%- endraw %}
+        image-name: {{cookiecutter.project_slug }}
+{%- raw %}
+        image-tag: head
+
+  build-and-publish-latest:
+    runs-on: ubuntu-latest
+    needs: check-and-test
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build and Publish latest Docker image
+      uses: VaultVulp/gp-docker-action@1.1.1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+{%- endraw %}
+        image-name: {{cookiecutter.project_slug }}
+{%- raw %}
+
+  build-and-publish-tag:
+    runs-on: ubuntu-latest
+    needs: check-and-test
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build and Publish Tag Docker image
+      uses: VaultVulp/gp-docker-action@1.1.1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+{%- endraw %}
+        image-name: {{cookiecutter.project_slug }}
+{%- raw %}
+        extract-git-tag: true
+{%- endraw %}
+{%- if cookiecutter.enable_auto_deploy == 'y' %}
+{%- raw %}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-publish-tag
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Deploy nomad job
+      run: |
+        wget https://releases.hashicorp.com/nomad/0.10.2/nomad_0.10.2_linux_amd64.zip
+        sudo unzip nomad_0.10.2_linux_amd64.zip -d /usr/local/bin
+        export DOCKER_IMAGE=${GITHUB_REPOSITORY,,}/${PACKAGE_NAME}
+        export DOCKER_TAG=$(echo ${GITHUB_REF} | sed -e "s/refs\/tags\///g")
+        export NOMAD_TASK=${PACKAGE_NAME}
+        envsubst < "./.nomad/template-deploy.nomad" > "./.nomad/deploy.nomad"
+        nomad job run ./.nomad/deploy.nomad
+      env:
+{%- endraw %}
+        PACKAGE_NAME: {{cookiecutter.project_slug }}
+{%- raw %}
+        NOMAD_ADDR: ${{ secrets.NOMAD_ADDR }}
+        NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
+        VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+        VAULT_ROLE_ID: ${{ secrets.VAULT_ROLE_ID }}
+        VAULT_SECRET_ID: ${{ secrets.VAULT_SECRET_ID }}
+{%- endraw %}
+        VAULT_PATH: {{cookiecutter.project_slug }}/production
+{%- raw %}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        LOKI_USERNAME: ${{ secrets.LOKI_USERNAME }}
+        LOKI_PASSWORD: ${{ secrets.LOKI_PASSWORD }}
+        LOKI_HOST: ${{ secrets.LOKI_HOST }}
+
+    - name: Inform failure
+      if: failure()
+      uses: cstuder/apprise-ga@v2.0.0
+      with:
+        args: '"CI/CD" "🟧: failed to publish a new release for @giftonium_bot."'
+      env:
+        APPRISE_URL: "tgram://${{ secrets.APPRISE_TELEGRAM_TOKEN }}/${{ secrets.APPRISE_CHAT_ID }}/"
+
+    - name: Inform success
+      uses: cstuder/apprise-ga@v2.0.0
+      with:
+        args: '"CI/CD" "🟩: successfully published a new release @giftonium_bot."'
+      env:
+        APPRISE_URL: "tgram://${{ secrets.APPRISE_TELEGRAM_TOKEN }}/${{ secrets.APPRISE_CHAT_ID }}/"
+{%- endraw %}
+{%- endif %}

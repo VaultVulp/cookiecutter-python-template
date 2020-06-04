@@ -1,0 +1,12 @@
+{
+    "project_name": "Awesomium",
+    "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_') }}",
+    "project_maintainer": "Sir Maintainer",
+    "maintainer_email": "some@host.domain",
+    "project_description": "Awesome project",
+    "upload_badge_to_minio_host": "n",
+    "minio_host": "some.host.domain",
+    "enable_auto_deploy": "n",
+    "coverage_fail_under": "50",
+    "python_version": "3.8"
+}
