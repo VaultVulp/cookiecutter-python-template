@@ -11,4 +11,9 @@
 2. Use my template
     ```bash
     cookiecutter https://github.com/VaultVulp/cookiecutter-python-template
+    cd <project-folder>
+    git init
+    pipenv install -d
+    git add .
+    git commit -m "Initial commit"
     ```
