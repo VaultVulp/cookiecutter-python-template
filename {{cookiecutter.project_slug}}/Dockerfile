@@ -10,8 +10,7 @@ WORKDIR /app
 RUN pip install -U pip && \
     pip install -U pipenv pbr
 
-COPY Pipfile  .
-COPY Pipfile.lock .
+COPY Pipfile* ./
 
 RUN pipenv lock -r > requirements.txt
 
