@@ -183,14 +183,18 @@ jobs:
       if: failure()
       uses: cstuder/apprise-ga@v2.0.0
       with:
-        args: '"CI/CD" "🟧: failed to publish a new release for @giftonium_bot."'
+{%- endraw %}
+        args: '"CI/CD" "🟧: failed to publish a new release for {{cookiecutter.project_name}}."'
+{%- raw %}
       env:
         APPRISE_URL: "tgram://${{ secrets.APPRISE_TELEGRAM_TOKEN }}/${{ secrets.APPRISE_CHAT_ID }}/"
 
     - name: Inform success
       uses: cstuder/apprise-ga@v2.0.0
       with:
-        args: '"CI/CD" "🟩: successfully published a new release @giftonium_bot."'
+{%- endraw %}
+        args: '"CI/CD" "🟩: successfully published a new release {{cookiecutter.project_name}}."'
+{%- raw %}
       env:
         APPRISE_URL: "tgram://${{ secrets.APPRISE_TELEGRAM_TOKEN }}/${{ secrets.APPRISE_CHAT_ID }}/"
 {%- endraw %}
