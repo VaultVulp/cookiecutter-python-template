@@ -162,23 +162,16 @@ jobs:
       run: |
         wget https://releases.hashicorp.com/nomad/0.10.2/nomad_0.10.2_linux_amd64.zip
         sudo unzip nomad_0.10.2_linux_amd64.zip -d /usr/local/bin
-        export DOCKER_IMAGE=${GITHUB_REPOSITORY,,}/${PACKAGE_NAME}
+        export DOCKER_IMAGE=${GITHUB_REPOSITORY,,}/{{cookiecutter.project_slug}}
         export DOCKER_TAG=$(echo ${GITHUB_REF} | sed -e "s/refs\/tags\///g")
-        export NOMAD_TASK=${PACKAGE_NAME}
         envsubst < "./.nomad/template-deploy.nomad" > "./.nomad/deploy.nomad"
         nomad job run ./.nomad/deploy.nomad
       env:
-{%- endraw %}
-        PACKAGE_NAME: {{cookiecutter.project_slug}}
-{%- raw %}
         NOMAD_ADDR: ${{ secrets.NOMAD_ADDR }}
         NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
         VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
         VAULT_ROLE_ID: ${{ secrets.VAULT_ROLE_ID }}
         VAULT_SECRET_ID: ${{ secrets.VAULT_SECRET_ID }}
-{%- endraw %}
-        VAULT_PATH: {{cookiecutter.project_slug}}
-{%- raw %}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         LOKI_USERNAME: ${{ secrets.LOKI_USERNAME }}
         LOKI_PASSWORD: ${{ secrets.LOKI_PASSWORD }}
