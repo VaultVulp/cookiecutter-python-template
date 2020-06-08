@@ -31,10 +31,12 @@ job "${GITHUB_REPOSITORY}" {
       }
 
       env {
-        VAULT_ADDR = "${VAULT_ADDR}"
-        VAULT_ROLE_ID = "${VAULT_ROLE_ID}"
-        VAULT_SECRET_ID = "${VAULT_SECRET_ID}"
-        VAULT_PATH = "${VAULT_PATH}"
+        ENV_FOR_DYNACONF = "production"
+        VAULT_URL_FOR_DYNACONF = "${VAULT_ADDR}"
+        VAULT_ENABLED_FOR_DYNACONF = true
+        VAULT_ROLE_ID_FOR_DYNACONF = "${VAULT_ROLE_ID}"
+        VAULT_SECRET_ID_FOR_DYNACONF = "${VAULT_SECRET_ID}"
+        VAULT_PATH_FOR_DYNACONF = "${VAULT_PATH}"
       }
 
       logs {
