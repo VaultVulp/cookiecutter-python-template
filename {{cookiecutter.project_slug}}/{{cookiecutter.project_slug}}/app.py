@@ -10,9 +10,10 @@ def main():
         asyncio.run(setup_logger())
         asyncio.run(do_work())
     except (KeyboardInterrupt, SystemExit):
-        logger.info('Closing an app')
+        logger.info('Closing the app')
     except Exception:
         logger.exception('Critical Error!')
 
 async def do_work():
-    pass
+    await asyncio.sleep(3)
+    logger.info("Job's Done!")
