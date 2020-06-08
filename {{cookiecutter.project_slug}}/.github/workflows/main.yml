@@ -184,7 +184,7 @@ jobs:
       uses: cstuder/apprise-ga@v2.0.0
       with:
 {%- endraw %}
-        args: '"CI/CD" "🟧: failed to publish a new release for {{cookiecutter.project_name}}."'
+        args: '"CI/CD" "🟧: failed to publish a new release of {{cookiecutter.project_name}}."'
 {%- raw %}
       env:
         APPRISE_URL: "tgram://${{ secrets.APPRISE_TELEGRAM_TOKEN }}/${{ secrets.APPRISE_CHAT_ID }}/"
@@ -193,7 +193,7 @@ jobs:
       uses: cstuder/apprise-ga@v2.0.0
       with:
 {%- endraw %}
-        args: '"CI/CD" "🟩: successfully published a new release {{cookiecutter.project_name}}."'
+        args: '"CI/CD" "🟩: successfully published a new release of {{cookiecutter.project_name}}."'
 {%- raw %}
       env:
         APPRISE_URL: "tgram://${{ secrets.APPRISE_TELEGRAM_TOKEN }}/${{ secrets.APPRISE_CHAT_ID }}/"
