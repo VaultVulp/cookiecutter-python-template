@@ -177,7 +177,7 @@ jobs:
         VAULT_ROLE_ID: ${{ secrets.VAULT_ROLE_ID }}
         VAULT_SECRET_ID: ${{ secrets.VAULT_SECRET_ID }}
 {%- endraw %}
-        VAULT_PATH: {{cookiecutter.project_slug}}/production
+        VAULT_PATH: {{cookiecutter.project_slug}}
 {%- raw %}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         LOKI_USERNAME: ${{ secrets.LOKI_USERNAME }}
