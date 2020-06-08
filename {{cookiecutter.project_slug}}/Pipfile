@@ -21,7 +21,7 @@ yapf = "*"
 
 [packages]
 click = "*"
-dynaconf = "*"
+dynaconf = {extras = ["vault"], version = "*"}
 loguru = "*"
 
 [requires]
