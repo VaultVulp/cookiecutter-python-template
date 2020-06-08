@@ -14,6 +14,7 @@ def main():
     except Exception:
         logger.exception('Critical Error!')
 
+
 async def do_work():
     await asyncio.sleep(3)
     logger.info("Job's Done!")
