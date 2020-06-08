@@ -4,7 +4,7 @@ from dynaconf import settings
 from loguru import logger
 
 
-def setup_logger() -> None:
+async def setup_logger() -> None:
     logger.remove()
     if settings.IS_DEBUG:
         level = 'DEBUG'
