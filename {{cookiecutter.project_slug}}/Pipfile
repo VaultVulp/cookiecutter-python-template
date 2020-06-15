@@ -4,7 +4,6 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-coverage-badge = "*"
 flake8 = "*"
 isort = "*"
 pbr = "*"
@@ -18,8 +17,11 @@ pytest-mock = "*"
 pytest-randomly = "*"
 pytest-sugar = "*"
 freezegun = "*"
-s3cmd = "*"
 yapf = "*"
+{%- if cookiecutter.upload_badge_to_minio_host == 'y' %}
+s3cmd = "*"
+coverage-badge = "*"
+{%- endif %}
 
 [packages]
 click = "*"
@@ -37,4 +39,6 @@ fix-yapf = "yapf -i -r -p {{cookiecutter.project_slug}}"
 check-isort = "isort -rc -c {{cookiecutter.project_slug}}"
 fix-isort = "isort -rc {{cookiecutter.project_slug}}"
 check-code-style = "flake8 {{cookiecutter.project_slug}}"
+{%- if cookiecutter.upload_badge_to_minio_host == 'y' %}
 make-badge = "coverage-badge -o ./coverage.svg"
+{%- endif %}
