@@ -1,13 +1,16 @@
 FROM python:{{cookiecutter.python_version}}-slim as build
 
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends git \
-  && apt-get purge -y --auto-remove \
-  && rm -rf /var/lib/apt/lists/*
+RUN set -xe && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends git && \
+    apt-get purge -y --auto-remove && \
+    apt-get clean -y && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-RUN pip install -U pip && \
+RUN set -xe && \
+    pip install -U pip && \
     pip install -U pipenv pbr
 
 COPY Pipfile* ./
@@ -22,16 +25,17 @@ FROM python:{{cookiecutter.python_version}}-slim as app
 
 WORKDIR /app
 
-RUN set -xe \
- && apt-get update -q \
- && apt-get upgrade -y -q
+RUN set -xe && \
+    apt-get update -q && \
+    apt-get upgrade -y -q && \
+    apt-get purge -y --auto-remove && \
+    apt-get clean -y && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /app/dist/*.whl .
 
-RUN set -xe \
- && pip install *.whl \
- && apt-get clean -y \
- && rm -f *.whl \
- && rm -rf /var/lib/apt/lists/*
+RUN set -xe && \
+    pip install *.whl && \
+    rm -f *.whl
 
 ENTRYPOINT ["python", "-m", "{{cookiecutter.project_slug}}"]
