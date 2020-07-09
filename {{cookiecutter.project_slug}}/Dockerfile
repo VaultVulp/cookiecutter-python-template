@@ -38,4 +38,6 @@ RUN set -xe && \
     pip install *.whl && \
     rm -f *.whl
 
+COPY settings.toml .
+
 ENTRYPOINT ["python", "-m", "{{cookiecutter.project_slug}}"]
