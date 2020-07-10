@@ -25,6 +25,8 @@ FROM python:{{cookiecutter.python_version}}-slim as app
 
 WORKDIR /app
 
+ENV ROOT_PATH_FOR_DYNACONF=/app
+
 RUN set -xe && \
     apt-get update -q && \
     apt-get upgrade -y -q && \
