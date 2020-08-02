@@ -1,10 +1,17 @@
 import asyncio
 
+import click
 from loguru import logger
 
 from {{cookiecutter.project_slug}}.logger import setup_logger
 
 
+@click.group()
+def cli():
+    pass
+
+
+@cli.command()
 def main():
     try:
         asyncio.run(setup_logger())

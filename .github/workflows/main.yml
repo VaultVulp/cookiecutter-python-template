@@ -27,3 +27,4 @@ jobs:
         ls -la
         git init
         docker build -t awesomium .
+        docker run --rm awesomium

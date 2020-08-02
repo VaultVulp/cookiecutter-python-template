@@ -42,4 +42,4 @@ RUN set -xe && \
 
 COPY settings.toml .
 
-ENTRYPOINT ["python", "-m", "{{cookiecutter.project_slug}}"]
+ENTRYPOINT ["{{cookiecutter.project_slug}}", "main"]
