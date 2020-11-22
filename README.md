@@ -4,7 +4,7 @@
 
 This template uses [Pipenv](https://pipenv.pypa.io/) as a dependency manager.
 
-I have another similar template that uses Poetry [here](https://github.com/great-glow/cookiecutter-python-template).
+I have similar template that uses Poetry [here](https://github.com/great-glow/cookiecutter-python-template).
 
 ## Usage
 
