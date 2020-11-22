@@ -2,6 +2,10 @@
 
 # Cookiecutter Template for Python Projects
 
+This template uses [Pipenv](https://pipenv.pypa.io/) as a dependency manager.
+
+I have another similar template that uses Poetry [here](https://github.com/great-glow/cookiecutter-python-template).
+
 ## Usage
 
 1. Install [Cookiecutter](https://github.com/cookiecutter/cookiecutter) globally
